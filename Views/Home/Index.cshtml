@@ -1,0 +1,110 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+}
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+@*            <button id="myButton" class="btn btn-primary">Mostrar SweetAlert</button>
+*@            Punto de Venta e Inventario
+            <small>Agroservicio Cuxil</small>
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="box box-success animated slideInRight">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><i class="fa fa-shopping-cart"></i> Ventas</h3>
+                    </div>
+                    <div class="box-body">
+                        <!-- Contenido relacionado con las ventas -->
+                        <!-- Puedes agregar tus propios elementos y diseño aquí -->
+                        <p>Aquí puedes administrar y realizar ventas.</p>
+                        <a href="#" class="btn btn-primary"><i class="fa fa-list"></i> Ver ventas</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="box box-info animated slideInRight">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><i class="fa fa-cubes"></i> Productos</h3>
+                    </div>
+                    <div class="box-body">
+                        <!-- Contenido relacionado con los productos -->
+                        <!-- Puedes agregar tus propios elementos y diseño aquí -->
+                        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+                            <li class="nav-item">
+                                <a href="#" class="nav-link active" data-toggle="collapse">
+                                    <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+                                    <p>
+                                        Productos
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview collapse">
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("BuscarProductos", "Productos")" class="nav-link">
+                                            <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                                            <p>Buscar productos</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("CrearProducto", "Productos")" class="nav-link">
+                                            <i class="fa fa-plus" aria-hidden="true"></i>
+                                            <p>Crear Producto</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("GestionProducto", "Productos")" class="nav-link">
+                                            Gestionar Detalles Productos
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <p>Aquí puedes administrar los productos disponibles.</p>
+                        <a href="#" class="btn btn-primary"><i class="fa fa-eye"></i> Ver productos</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="box box-warning animated slideInRight">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><i class="fa fa-database"></i> Inventario</h3>
+                    </div>
+                    <div class="box-body">
+                        <!-- Contenido relacionado con el inventario -->
+                        <!-- Puedes agregar tus propios elementos y diseño aquí -->
+                        <p>Aquí puedes gestionar el inventario de productos.</p>
+                        <a href="#" class="btn btn-primary"><i class="fa fa-list-alt"></i> Ver inventario</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+@section Scripts {
+    <script src="~/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#myButton').click(function () {
+                Swal.fire({
+                    title: 'SweetAlert!',
+                    text: '¡Este es un mensaje de SweetAlert!',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                });
+            });
+        });
+    </script>
+}
+    @section Styles {
+    <link href="~/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+}

@@ -1,0 +1,78 @@
+﻿@model List<AgroservicioCuxil.Models.Producto>
+
+@{
+    ViewData["Title"] = "Buscar Productos";
+
+    var productos = new List<AgroservicioCuxil.Models.Producto>();
+    if (ViewBag.Productos != null)
+    {
+        productos = (List<AgroservicioCuxil.Models.Producto>)ViewBag.Productos;
+    }
+}
+
+<h2 class="text-center display-4">Buscar Productos</h2>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <form id="searchForm" method="get">
+                <div class="input-group">
+                    <input type="search" id="searchInput" name="busqueda" class="form-control form-control-lg" placeholder="Ingrese su búsqueda">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-lg btn-default">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@if (productos.Any())
+{
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <table id="searchResultsTable" class="table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var producto in productos)
+                        {
+                            <tr>
+                                <td>@producto.Nombre</td>
+                                <td><a class="btn btn-primary btn-ver" href="@Url.Action("DetalleProducto", "Productos", new { id = producto.Id })">Ver</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    if (ViewBag.Busqueda != null)
+    {
+        <p class="text-center">No se encontraron resultados</p>
+    }
+}
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            var table = $('#searchResultsTable').DataTable();
+
+            $('#searchForm').on('submit', function (e) {
+                e.preventDefault();
+                var searchText = $('#searchInput').val();
+                window.location.href = '@Url.Action("BuscarProductos", "Productos")?busqueda=' + searchText;
+            });
+        });
+    </script>
+}

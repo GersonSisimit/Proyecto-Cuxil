@@ -1,0 +1,206 @@
+﻿@using AgroservicioCuxil.Models;
+@model Producto
+
+@{
+    ViewData["Title"] = "Crear Producto";
+    Layout = "_Layout";
+    var relacionTipoSubtipoProducto = ViewBag.RelacionTipoSubtipoProducto;
+    var SubtipoProducto = ViewBag.SubtipoProducto;
+}
+
+<h1><i class="fas fa-plus"></i> Crear Producto</h1>
+<button id="btnMostrarFormulario" class="btn btn-secondary">Iniciar creacion</button>
+
+<div id="formulario" class="d-none">
+    <form id="crearProductoForm">
+        <div class="form-group">
+            <label for="Nombre"><i class="fas fa-font"></i> Nombre:</label>
+            <input type="text" id="Nombre" name="Nombre" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label for="IdMarca"><i class="fas fa-tag"></i> Marca:</label>
+            <select id="IdMarca" name="IdMarca" class="form-control" required>
+                <option value="">-Seleccione-</option>
+                @foreach (var marca in ViewBag.Marcas)
+                {
+                    <option value="@marca.Id">@marca.Nombre</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="IdTipoProducto"><i class="fas fa-tags"></i> Tipo de Producto:</label>
+            <select id="IdTipoProducto" name="IdTipoProducto" class="form-control" onchange="MostrarSubtipos()" required>
+                <option value="">-Seleccione-</option>
+                @foreach (var tipoProducto in ViewBag.TiposProductos)
+                {
+                    <option value="@tipoProducto.Id">@tipoProducto.Nombre</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="IdSubtipo"><i class="fas fa-cubes"></i> Subtipo:</label>
+            <select id="IdSubtipo" name="IdSubtipo" class="form-control" required></select>
+        </div>
+
+        <button type="submit" id="btnGuardar" class="btn btn-primary"><i class="fas fa-check"></i> Crear</button>
+        <button id="btnCancelar" class="btn btn-secondary"><i class="fas fa-times"></i> Cancelar</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/plugins/sweetalert2/sweetalert2.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#btnMostrarFormulario").click(function (event) {
+                event.preventDefault(); // Evitar el comportamiento predeterminado del botón
+
+                $("#formulario").removeClass("d-none");
+                $("#btnMostrarFormulario").addClass("d-none");
+            });
+
+            $("#btnCancelar").click(function (event) {
+                event.preventDefault(); // Evitar el comportamiento predeterminado del botón
+
+                $("#formulario").addClass("d-none");
+                $("#btnMostrarFormulario").removeClass("d-none");
+                $("#crearProductoForm")[0].reset();
+            });
+
+            $("#crearProductoForm").submit(function (event) {
+                event.preventDefault(); // Evitar el comportamiento predeterminado del formulario
+
+                // Obtener los valores del formulario
+                var nombre = $("#Nombre").val();
+                var idMarca = $("#IdMarca").val();
+                var idTipoProducto = $("#IdTipoProducto").val();
+                var idSubtipo = $("#IdSubtipo").val();
+
+                // Validar que todos los campos tengan valores
+                if (nombre !== "" && idMarca !== "" && idTipoProducto !== "" && idSubtipo !== "") {
+                    // Mostrar un sweet alert de confirmación antes de enviar la solicitud AJAX
+                    Swal.fire({
+                        title: '¿Deseas crear el producto?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: '<i class="fas fa-check"></i> Crear',
+                        cancelButtonText: '<i class="fas fa-times"></i> Cancelar',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Enviar la solicitud AJAX si el usuario confirma
+                            $.ajax({
+                                url: "/Productos/CrearProducto",
+                                type: "POST",
+                                data: {
+                                    Nombre: nombre,
+                                    IdMarca: idMarca,
+                                    IdTipoProducto: idTipoProducto,
+                                    IdSubtipo: idSubtipo
+                                },
+                                success: function (response) {
+                                    if (response.resultado) {
+
+                                        var idProductoCreado = response.mensaje2;
+                                        $("#formulario").addClass("d-none");
+                                        $("#btnMostrarFormulario").removeClass("d-none");
+                                        $("#crearProductoForm")[0].reset();
+                                        Swal.fire({
+                                            title: '¡Éxito!',
+                                            html: response.mensaje,
+                                            icon: 'success',
+                                            confirmButtonText: 'Ver Producto Creado',
+                                            showCancelButton: true,
+                                            cancelButtonText: 'Aceptar',
+                                            buttonsStyling: false,
+                                            customClass: {
+                                                confirmButton: 'btn btn-secondary ',
+                                                cancelButton: 'btn btn-primary ml-2'
+                                            }
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                // Ver Producto Creado: Redirigir a DetalleProducto con el id
+                                                var url = '@Url.Action("DetalleProducto", "Productos")';
+                                                var redireccion = url + '?id=' + idProductoCreado;
+                                                window.location.href = redireccion;
+                                            } else {
+                                                Swal.close();
+                                            }
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: '¡Error!',
+                                            html: response.mensaje,
+                                            icon: 'error',
+                                            confirmButtonText: 'Aceptar',
+                                            buttonsStyling: false,
+                                            customClass: {
+                                                confirmButton: 'btn btn-primary'
+                                            }
+                                        });
+                                    }
+                                },
+
+                                error: function (xhr, status, error) {
+                                    // Mostrar el mensaje de error si la llamada AJAX falla
+                                    console.error(error);
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    // Mostrar un alert indicando que hay campos vacíos
+                    alert("Por favor, completa todos los campos.");
+                }
+            });
+        });
+
+        var relacionTipoSubtipoProductoArray = @Html.Raw(Json.Serialize(relacionTipoSubtipoProducto));
+        var SubtipoProductoArray = @Html.Raw(Json.Serialize(SubtipoProducto));
+        function MostrarSubtipos() {
+            var idTipoProducto = $("#IdTipoProducto").val();
+
+            // Realizar la llamada AJAX
+            $.ajax({
+                url: "/Productos/BuscarSubtipos",
+                method: "POST",
+                data: { id: idTipoProducto },
+                success: function (response) {
+                    // Limpiar el select actual
+                    $("#IdSubtipo").empty();
+
+                    // Mostrar el mensaje con SweetAlert
+                    if (response.resultado) {
+                        var subtipos = response.subtipos;
+
+                        // Agregar las opciones al select
+                        subtipos.forEach(function (subtipo) {
+                            $("#IdSubtipo").append('<option value="' + subtipo.id + '">' + subtipo.nombre + '</option>');
+                        });
+                    } else {
+                        a
+                        Swal.fire({
+                            title: "<i class='fas fa-info-circle'></i> Información",
+                            html: response.mensaje,
+                            icon: "error",
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Mostrar el mensaje de error con SweetAlert
+                    Swal.fire({
+                        title: "<i class='fas fa-exclamation-circle'></i> Error",
+                        text: "Ocurrió un error al buscar los subtipos",
+                        icon: "error",
+                    });
+                },
+            });
+        }
+    </script>
+}
+
+    @section Styles {
+    <link href="~/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+}

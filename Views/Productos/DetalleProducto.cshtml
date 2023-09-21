@@ -1,0 +1,368 @@
+﻿@{
+    ViewData["Title"] = "Detalle de Producto";
+    string nombreProducto = ViewBag.NombreProducto;
+    string tipoProducto = ViewBag.TipoProducto;
+    string subtipoProducto = ViewBag.SubtipoProducto;
+    string nombreMarca = ViewBag.NombreMarca;
+    string rutaImagen = ViewBag.RutaImagen;
+    int IdProducto = ViewBag.IdProducto;
+
+    var Presentaciones = new List<AgroservicioCuxil.Models.PresentacionProducto>();
+    if (ViewBag.presentacionesProducto != null)
+    {
+        Presentaciones = (List<AgroservicioCuxil.Models.PresentacionProducto>)ViewBag.presentacionesProducto;
+    }
+
+    var DetallePresentaciones = new List<AgroservicioCuxil.Models.DetallePresentacionProducto>();
+    if (ViewBag.DetallepresentacionesProducto != null)
+    {
+        DetallePresentaciones = (List<AgroservicioCuxil.Models.DetallePresentacionProducto>)ViewBag.DetallepresentacionesProducto;
+    }
+}
+
+    <div>
+        <input type="hidden" id="IdProducto" value="@IdProducto" />
+    </div>
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Detalle de Producto</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <!-- Detalle del Producto -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="nombre"><i class="fas fa-font"></i> Nombre</label>
+                                    <input type="text" class="form-control" id="nombre" value="@nombreProducto" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tipoProducto"><i class="fas fa-tags text-success"></i> Tipo de Producto</label>
+                                    <input type="text" class="form-control" id="tipoProducto" value="@tipoProducto" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="subtipoProducto"><i class="fas fa-cubes text-info"></i> Subtipo de Producto</label>
+                                    <input type="text" class="form-control" id="subtipoProducto" value="@subtipoProducto" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="marca"><i class="fas fa-tag text-warning"></i> Marca</label>
+                                    <input type="text" class="form-control" id="marca" value="@nombreMarca" readonly>
+                                </div>
+
+                                <!-- Agregar o actualizar imagen del producto -->
+                            @if (string.IsNullOrEmpty(rutaImagen))
+                            {
+                                <form method="post" action="/Productos/AgregarImagen" enctype="multipart/form-data">
+                                    <input type="hidden" name="Id" value="@ViewBag.IdProducto" />
+                                    <div class="form-group">
+                                        <label for="imagen">Imagen</label>
+                                        <input type="file" class="form-control-file" id="imagen" name="Imagen" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary"><i class="fas fa-image"></i> Agregar Imagen</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <div class="form-group">
+                                    <label for="imagen"><i class="fas fa-image"></i> Imagen Actual</label>
+                                    <br>
+                                    <img src="/ImagenesProductos/@rutaImagen" alt="Imagen del Producto" class="img-thumbnail" style="max-width: 200px;">
+                                </div>
+                                <form method="post" action="/Productos/AgregarImagen" enctype="multipart/form-data">
+                                    <input type="hidden" name="Id" value="@ViewBag.IdProducto" />
+                                    <div class="form-group">
+                                        <label for="imagen">Nueva Imagen</label>
+                                        <input type="file" class="form-control-file" id="imagen" name="Imagen" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary"><i class="fas fa-sync"></i> Actualizar Imagen</button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de Presentaciones -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Presentaciones</h5>
+                            <ul class="list-group">
+                                @foreach (var presentacion in Presentaciones)
+                                {
+                                    var detalle = DetallePresentaciones.Where(x => x.Id == presentacion.IdDetallePresentacion).FirstOrDefault();
+
+                                    <li class="list-group-item">
+                                        <strong>Presentación:</strong> @detalle.Nombre <br />
+                                        <strong>Precio:</strong> @presentacion.Precio <br />
+                                        <button class="btn btn-primary" onclick="VerDetallePresentacion('@presentacion.Id')">Ver Presentacionn</button>
+
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalPresentaciones">
+        Agregar Presentacion
+    </button>
+
+    <div class="modal fade" id="modalPresentaciones" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Presentaciones</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs" id="tabPresentaciones" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="tabLiquido" data-toggle="tab" href="#contenidoLiquido" role="tab" aria-controls="contenidoLiquido" aria-selected="true">Líquido</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="tabPolvo" data-toggle="tab" href="#contenidoPolvo" role="tab" aria-controls="contenidoPolvo" aria-selected="false">Polvo</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="tabOtros" data-toggle="tab" href="#contenidoOtros" role="tab" aria-controls="contenidoOtros" aria-selected="false">Otros</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="contenidoPresentaciones">
+                        <div class="tab-pane fade show active" id="contenidoLiquido" role="tabpanel" aria-labelledby="tabLiquido">
+                            <h4>Líquido</h4>
+                            <div id="presentacionesLiquido"></div>
+                        </div>
+                        <div class="tab-pane fade" id="contenidoPolvo" role="tabpanel" aria-labelledby="tabPolvo">
+                            <h4>Polvo</h4>
+                            <div id="presentacionesPolvo"></div>
+                        </div>
+                        <div class="tab-pane fade" id="contenidoOtros" role="tabpanel" aria-labelledby="tabOtros">
+                            <h4>Otros</h4>
+                            <div id="presentacionesOtros"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section styles{
+    <link href="~/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+    <style>
+        .btn-seleccionar {
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+
+        .modal-header {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .linea-separadora {
+            border-top: 1px solid #dddddd;
+            margin: 8px 0;
+        }
+    </style>
+}
+
+@section scripts{
+    <script src="~/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('button[data-target="#modalPresentaciones"]').click(function () {
+                $.ajax({
+                    url: '/Productos/getPresentaciones',
+                    type: 'POST',
+                    success: function (data) {
+                        // Clear all tabs and their content
+                        $('#tabPresentaciones').empty();
+                        $('#contenidoPresentaciones').empty();
+
+                        // Group the presentaciones by tipo
+                        var presentacionesLiquido = data.filter(p => p.tipo === 0);
+                        var presentacionesPolvo = data.filter(p => p.tipo === 1);
+                        var presentacionesOtros = data.filter(p => p.tipo === 2);
+
+                        // Create and append the tab links
+                        $('#tabPresentaciones').append('<li class="nav-item"><a class="nav-link active" id="tabLiquido" data-toggle="tab" href="#contenidoLiquido" role="tab" aria-controls="contenidoLiquido" aria-selected="true">Líquido</a></li>');
+                        $('#tabPresentaciones').append('<li class="nav-item"><a class="nav-link" id="tabPolvo" data-toggle="tab" href="#contenidoPolvo" role="tab" aria-controls="contenidoPolvo" aria-selected="false">Polvo</a></li>');
+                        $('#tabPresentaciones').append('<li class="nav-item"><a class="nav-link" id="tabOtros" data-toggle="tab" href="#contenidoOtros" role="tab" aria-controls="contenidoOtros" aria-selected="false">Otros</a></li>');
+
+                        // Create and append the tab content
+                        $('#contenidoPresentaciones').append('<div class="tab-pane fade show active" id="contenidoLiquido" role="tabpanel" aria-labelledby="tabLiquido"></div>');
+                        $('#contenidoPresentaciones').append('<div class="tab-pane fade" id="contenidoPolvo" role="tabpanel" aria-labelledby="tabPolvo"></div>');
+                        $('#contenidoPresentaciones').append('<div class="tab-pane fade" id="contenidoOtros" role="tabpanel" aria-labelledby="tabOtros"></div>');
+
+                        // Open the modal
+                        $('#modalPresentaciones').modal('show');
+
+                        // Fill in the tab content with presentaciones data and add "Seleccionar" buttons
+                        fillTabContentAndAddButtons('contenidoLiquido', presentacionesLiquido);
+                        fillTabContentAndAddButtons('contenidoPolvo', presentacionesPolvo);
+                        fillTabContentAndAddButtons('contenidoOtros', presentacionesOtros);
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+
+        function fillTabContentAndAddButtons(tabId, presentaciones) {
+            $('#' + tabId).empty();
+            $('#' + tabId).append('<h4>' + obtenerTipoPresentacion(tabId) + '</h4>');
+
+            var presentacionesDiv = $('<div></div>');
+            presentaciones.forEach(p => {
+                var itemHtml = '<p class="linea-separadora">' + p.nombre + '</p>';
+                var buttonHtml = '<button class="btn btn-primary btn-sm btn-seleccionar" data-id="' + p.id + '">Seleccionar</button>';
+                presentacionesDiv.append('<div>' + itemHtml + buttonHtml + '</div>');
+            });
+
+            $('#' + tabId).append(presentacionesDiv);
+        }
+
+        function obtenerTipoPresentacion(tabId) {
+            switch (tabId) {
+                case 'contenidoLiquido':
+                    return 'Líquido';
+                case 'contenidoPolvo':
+                    return 'Polvo';
+                case 'contenidoOtros':
+                    return 'Otros';
+                default:
+                    return '';
+            }
+        }
+
+        // Manejar el evento click del botón "Seleccionar"
+        $(document).on('click', '.btn-seleccionar', function () {
+            var nombreSeleccionado = $(this).siblings('p').text();
+            var idDetallePresentacion = $(this).data('id');
+            var idProducto = document.getElementById("IdProducto").value;
+
+            // Mostrar SweetAlert para confirmar el registro
+            Swal.fire({
+                title: '¿Deseas crear esa presentacion?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-check"></i> Crear',
+                cancelButtonText: '<i class="fas fa-times"></i> Cancelar',
+                showCloseButton: true,
+                showLoaderOnConfirm: true,
+                preConfirm: () => {
+                    return enviarRegistroAjax(idProducto, idDetallePresentacion);
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if (result.value && result.value.resultado) {
+                        // Mostrar SweetAlert con la respuesta exitosa del controlador
+                        Swal.fire({
+                            title: 'Éxito',
+                            text: result.value.mensaje,
+                            icon: 'success',
+                        }).then(() => {
+                            // Recargar la página después de cerrar el SweetAlert de éxito
+                            location.reload();
+                        });
+
+                    } else {
+                        // Mostrar SweetAlert con la respuesta de error del controlador
+                        Swal.fire({
+                            title: 'Error',
+                            text: result.value.mensaje,
+                            icon: 'error',
+                        });
+                    }
+                }
+            });
+
+            function enviarRegistroAjax(idProducto, idDetallePresentacion) {
+                return new Promise((resolve) => {
+                    // Mostrar SweetAlert de carga mientras se realiza la solicitud AJAX
+                    Swal.fire({
+                        title: 'Enviando solicitud...',
+                        allowOutsideClick: false,
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        onBeforeOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    $.ajax({
+                        url: '/Productos/GuardarPresentacionProducto', // Asegúrate de poner la ruta correcta a tu controlador
+                        type: 'POST',
+                        data: {
+                            idProducto: idProducto,
+                            idDetallePresentacion: idDetallePresentacion
+                        },
+                        success: function (data) {
+                            // Cerrar SweetAlert de carga
+                            Swal.close();
+
+                            resolve(data);
+                        },
+                        error: function (error) {
+                            console.log(error);
+                            // Cerrar SweetAlert de carga
+                            Swal.close();
+
+                            resolve({ resultado: false, mensaje: 'Error en la solicitud' });
+                        }
+                    });
+                });
+            }
+            $('#modalPresentaciones').modal('hide');
+        });
+
+        function VerDetallePresentacion(IdPresentacion) {
+            var idProducto = document.getElementById("IdProducto").value;
+            var url = '@Url.Action("DetallePresentacionProducto", "Productos")' + '?idProducto=' + idProducto + '&IdPresentacion=' + IdPresentacion;
+            window.location.href = url;
+        }
+    </script>
+
+    <script>
+        var creacionExito = '@TempData["CreacionExito"]';
+        var error = '@TempData["Error"]';
+        var mensaje = '@TempData["Mensaje"]';
+
+        if (creacionExito === "Si") {
+            Swal.fire({
+                title: "",
+                text: mensaje,
+                icon: "success"
+            });
+        }
+
+        if (error === "Si") {
+            Swal.fire({
+                title: "Error",
+                text: mensaje,
+                icon: "error"
+            });
+        }
+    </script>
+}

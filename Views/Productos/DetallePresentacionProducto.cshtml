@@ -1,0 +1,198 @@
+﻿@{
+    ViewData["Title"] = "Detalle de Producto";
+    string nombreProducto = ViewBag.NombreProducto;
+    string tipoProducto = ViewBag.TipoProducto;
+    string subtipoProducto = ViewBag.SubtipoProducto;
+    string nombreMarca = ViewBag.NombreMarca;
+    string rutaImagen = ViewBag.RutaImagen;
+    int IdProducto = ViewBag.IdProducto;
+
+    var Presentacion = new AgroservicioCuxil.Models.PresentacionProducto();
+    if (ViewBag.Presentacion != null)
+    {
+        Presentacion = (AgroservicioCuxil.Models.PresentacionProducto)ViewBag.Presentacion;
+    }
+
+    var DetallePresentacion = new AgroservicioCuxil.Models.DetallePresentacionProducto();
+    if (ViewBag.DetallePresentacion != null)
+    {
+        DetallePresentacion = (AgroservicioCuxil.Models.DetallePresentacionProducto)ViewBag.DetallePresentacion;
+    }
+}
+
+<div>
+    <input type="hidden" id="IdProducto" value="@IdProducto" />
+</div>
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Detalle presentacion producto</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Detalle del Producto -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="nombre"><i class="fas fa-font"></i> Nombre</label>
+                                <input type="text" class="form-control" id="nombre" value="@nombreProducto" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="tipoProducto"><i class="fas fa-tags text-success"></i> Tipo de Producto</label>
+                                <input type="text" class="form-control" id="tipoProducto" value="@tipoProducto" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="subtipoProducto"><i class="fas fa-cubes text-info"></i> Subtipo de Producto</label>
+                                <input type="text" class="form-control" id="subtipoProducto" value="@subtipoProducto" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="marca"><i class="fas fa-tag text-warning"></i> Marca</label>
+                                <input type="text" class="form-control" id="marca" value="@nombreMarca" readonly>
+                            </div>
+                             <div class="form-group">
+                                <label for="marca"><i class="fas fa-tag text-warning"></i> Precio</label>
+                                <input type="text" class="form-control" id="marca" value="@Presentacion.Precio" readonly>
+                            </div> 
+                            <div class="form-group">
+                                <label for="marca"><i class="fas fa-cubes text-info"></i> Existencia</label>
+                                <input type="text" class="form-control" id="marca" value="@Presentacion.Existencia" readonly>
+                            </div>
+
+                            <!-- Agregar o actualizar imagen del producto -->
+                            @if (string.IsNullOrEmpty(Presentacion.RutaImagen))
+                            {
+                                <form method="post" action="/Productos/AgregarImagenPresentacion" enctype="multipart/form-data">
+                                    <input type="hidden" name="Id" value="@Presentacion.Id" />
+                                    <input type="hidden" name="idProducto" value="@IdProducto" />
+                                    <div class="form-group">
+                                        <label for="imagen">Imagen</label>
+                                        <input type="file" class="form-control-file" id="imagen" name="Imagen" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary"><i class="fas fa-image"></i> Agregar Imagen</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <div class="form-group">
+                                    <label for="imagen"><i class="fas fa-image"></i> Imagen Actual</label>
+                                    <br>
+                                    <img src="/ImagenesProductos/@Presentacion.RutaImagen" alt="Imagen del Producto" class="img-thumbnail" style="max-width: 200px;">
+                                </div>
+                                <form method="post" action="/Productos/AgregarImagenPresentacion" enctype="multipart/form-data">
+                                    <input type="hidden" name="Id" value="@Presentacion.Id" />
+                                    <input type="hidden" name="idProducto" value="@IdProducto" />
+                                    <div class="form-group">
+                                        <label for="imagen">Nueva Imagen</label>
+                                        <input type="file" class="form-control-file" id="imagen" name="Imagen" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary"><i class="fas fa-sync"></i> Actualizar Imagen</button>
+                                </form>
+                            }
+                            @if (Presentacion.Precio == 0)
+                            {
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDetallePresenetacion">
+                                    Agregar Detalles
+                                </button>
+                            }
+                            else
+                            {
+                                   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDetallePresenetacion">
+                                    Actualizar Detalles
+                                </button> 
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de Presentaciones -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Presentaciones</h5>
+                            <ul class="list-group">
+
+
+                                <li class="list-group-item">
+                                    <strong>Presentación:</strong> @DetallePresentacion.Nombre <br />
+                                    @*                                        <strong>Precio:</strong> @presentacion.Precio <br />
+                                    *@                                        <!-- Puedes mostrar más detalles de la presentación aquí si lo deseas -->
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    @using (Html.BeginForm("ActualizarPresentacionProducto", "Productos", FormMethod.Post))
+    {
+        <div class="modal fade" id="modalDetallePresenetacion" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+                <div class="modal-content">
+                    <input type="hidden" id="IdPresentacion" name="IdPresentacion" value="@Presentacion.Id" />
+                    <input type="hidden" id="IdProducto" name="IdProducto" value="@IdProducto" />
+                    <div class="modal-header bg-primary">
+                        <h5 class="modal-title" id="modalLabel">Presentaciones</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="Precio">Precio:</label>
+                            <input required type="number" step="any" name="Precio" class="form-control" title="Precio" />
+                        </div>
+                        <div class="form-group">
+                            <label for="Existencia">Existencia:</label>
+                            <input required type="number" step="any" name="Existencia" class="form-control" title="Existencia" />
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+
+
+</div>
+
+@section styles{
+    <link href="~/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+}
+
+    @section scripts{
+    <script src="~/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <script>
+        var creacionExito = '@TempData["CreacionExito"]';
+        var error = '@TempData["Error"]';
+        var mensaje = '@TempData["Mensaje"]';
+
+        if (creacionExito === "Si") {
+            Swal.fire({
+                title: "",
+                text: mensaje,
+                icon: "success"
+            });
+        }
+
+        if (error === "Si") {
+            Swal.fire({
+                title: "Error",
+                text: mensaje,
+                icon: "error"
+            });
+        }
+    </script>
+}
