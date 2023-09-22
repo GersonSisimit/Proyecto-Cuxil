@@ -422,8 +422,41 @@ namespace AgroservicioCuxil.Controllers
         [AuthorizeUsers]
         public IActionResult GestionProducto()
         {
+            // crear marcas
+            //crear presentacion de producto
+            //crear detalle de producto
+            // crear tipo y subipo de productos
+            //crear detalle presentacion producto
 
             return View();
+        }
+
+
+        [AuthorizeUsers]
+        public IActionResult MarcaProductos()
+        {
+            var Marcas = _context.Marca.ToList(); 
+            return View(Marcas);
+        }
+
+        [HttpPost]
+        public IActionResult EditarMarca(Marca marca)
+        {
+            if (ModelState.IsValid)
+            {
+                var marcaExistente = _context.Marca.Find(marca.Id);
+                if (marcaExistente == null)
+                {
+                    return RedirectToAction("MarcaProductos", "Productos");
+                }
+
+                marcaExistente.Nombre = marca.Nombre;
+                _context.SaveChanges();
+                TempData["CreacionExito"] = "Si";
+                TempData["Mensaje"] = "Modificacion Exitosa";
+                return RedirectToAction("MarcaProductos", "Productos");
+            }
+            return RedirectToAction("MarcaProductos", "Productos");
         }
         #endregion
     }
