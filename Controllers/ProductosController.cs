@@ -416,7 +416,7 @@ namespace AgroservicioCuxil.Controllers
             return RedirectToAction("DetallePresentacionProducto", new { idProducto = idProducto, IdPresentacion = idDetalle });
         }
 
-        #region Crud para definir detalles de producto
+        #region Crud para Marca
 
         //This is my first commet
         [AuthorizeUsers]
@@ -435,7 +435,7 @@ namespace AgroservicioCuxil.Controllers
         [AuthorizeUsers]
         public IActionResult MarcaProductos()
         {
-            var Marcas = _context.Marca.ToList(); 
+            var Marcas = _context.Marca.ToList();
             return View(Marcas);
         }
 
@@ -457,6 +457,32 @@ namespace AgroservicioCuxil.Controllers
                 return RedirectToAction("MarcaProductos", "Productos");
             }
             return RedirectToAction("MarcaProductos", "Productos");
+        }
+
+        [HttpPost]
+        public IActionResult CrearMarca(Marca marca)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Marca.Add(marca); // Agregar la marca al contexto
+                    _context.SaveChanges(); // Guardar los cambios en la base de datos
+
+                    TempData["CreacionExito"] = "Si";
+                    TempData["Mensaje"] = "Creacion Exitosa";
+                    return RedirectToAction("MarcaProductos", "Productos");
+                }
+                catch (Exception ex)
+                {
+                    TempData["Error"] = "Si";
+                    TempData["Mensaje"] = ex.Message;
+                    return RedirectToAction("MarcaProductos", "Productos");
+                }
+            }
+            return RedirectToAction("MarcaProductos", "Productos");
+
+           
         }
         #endregion
     }
