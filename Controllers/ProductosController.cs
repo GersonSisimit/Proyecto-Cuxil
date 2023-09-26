@@ -416,9 +416,6 @@ namespace AgroservicioCuxil.Controllers
             return RedirectToAction("DetallePresentacionProducto", new { idProducto = idProducto, IdPresentacion = idDetalle });
         }
 
-        #region Crud para Marca
-
-        //This is my first commet
         [AuthorizeUsers]
         public IActionResult GestionProducto()
         {
@@ -430,7 +427,7 @@ namespace AgroservicioCuxil.Controllers
 
             return View();
         }
-
+        #region Crud para Marca
 
         [AuthorizeUsers]
         public IActionResult MarcaProductos()
@@ -447,6 +444,12 @@ namespace AgroservicioCuxil.Controllers
                 var marcaExistente = _context.Marca.Find(marca.Id);
                 if (marcaExistente == null)
                 {
+                    return RedirectToAction("MarcaProductos", "Productos");
+                }
+                if (string.IsNullOrWhiteSpace(marca.Nombre))
+                {
+                    TempData["Error"] = "Si";
+                    TempData["Mensaje"] = "No ingrese un nombre en blanco";
                     return RedirectToAction("MarcaProductos", "Productos");
                 }
 
@@ -484,6 +487,69 @@ namespace AgroservicioCuxil.Controllers
 
            
         }
+        #endregion
+        #region CRUD TipoProducto
+
+        [AuthorizeUsers]
+        public IActionResult TipoProducto()
+        {
+            var TipoProductos = _context.TipoProducto.ToList();
+            return View(TipoProductos);
+        }
+
+        [HttpPost]
+        public IActionResult EditarTipoProducto(TipoProducto TipoProducto)
+        {
+            if (ModelState.IsValid)
+            {
+                var RegistroExistente = _context.TipoProducto.Find(TipoProducto.Id);
+                if (RegistroExistente == null)
+                {
+                    TempData["Error"] = "Si";
+                    TempData["Mensaje"] = "No se encontro el tipo de producto";
+                    return RedirectToAction("TipoProducto", "Productos");
+                }
+                if (string.IsNullOrWhiteSpace(TipoProducto.Nombre))
+                {
+                    TempData["Error"] = "Si";
+                    TempData["Mensaje"] = "No ingrese un nombre en blanco";
+                    return RedirectToAction("TipoProducto", "Productos");
+                }
+
+                RegistroExistente.Nombre = TipoProducto.Nombre;
+                _context.SaveChanges();
+                TempData["CreacionExito"] = "Si";
+                TempData["Mensaje"] = "Modificacion Exitosa";
+                return RedirectToAction("TipoProducto", "Productos");
+            }
+            return RedirectToAction("MarcaProductos", "Productos");
+        }
+
+        [HttpPost]
+        public IActionResult CrearTipoProducto(TipoProducto TipoProducto)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.TipoProducto.Add(TipoProducto); // Agregar la marca al contexto
+                    _context.SaveChanges(); // Guardar los cambios en la base de datos
+
+                    TempData["CreacionExito"] = "Si";
+                    TempData["Mensaje"] = "Creacion Exitosa";
+                    return RedirectToAction("TipoProducto", "Productos");
+                }
+                catch (Exception ex)
+                {
+                    TempData["Error"] = "Si";
+                    TempData["Mensaje"] = ex.Message;
+                    return RedirectToAction("TipoProducto", "Productos");
+                }
+            }
+            return RedirectToAction("TipoProducto", "Productos");
+        }
+
+
         #endregion
     }
 }
