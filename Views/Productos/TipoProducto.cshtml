@@ -1,11 +1,11 @@
-﻿@model List<AgroservicioCuxil.Models.Marca>;
+﻿@model List<AgroservicioCuxil.Models.TipoProducto>;
 
 @{
-    ViewData["Title"] = "Lista de Marcas";
+    ViewData["Title"] = "Lista de tipo de productos";
 }
 
 <div class="container">
-    <h2>Lista de Marcas</h2>
+    <h2>Lista de tipos de productos</h2>
     <div class="row">
         <div class="col-md-8">
             <div class="card">
@@ -16,7 +16,7 @@
                 </div>
                 <div id="crearAcordeon" class="collapse">
                     <div class="card-body">
-                        <form asp-action="CrearMarca" method="post">
+                        <form asp-action="CrearTipoProducto" method="post">
                             <div class="form-group">
                                 <label for="nombre">Nombre</label>
                                 <input type="text" id="nombre" name="Nombre" class="form-control" />
@@ -39,12 +39,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var marca in Model)
+                    @foreach (var TipoProducto in Model)
                     {
                         <tr>
-                            <td>@marca.Nombre</td>
+                            <td>@TipoProducto.Nombre</td>
                             <td>
-                                <button class="btn btn-primary editar-btn" data-id="@marca.Id" data-nombre="@marca.Nombre">Editar</button>
+                                <button class="btn btn-primary editar-btn" data-id="@TipoProducto.Id" data-nombre="@TipoProducto.Nombre">Editar</button>
                             </td>
                         </tr>
                     }
@@ -59,14 +59,14 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editarModalLabel">Editar Marca</h5>
+                <h5 class="modal-title" id="editarModalLabel">Editar TipoProducto</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="editarForm" action="@Url.Action("EditarMarca", "Productos")" method="post">
+            <form id="editarForm" action="@Url.Action("EditarTipoProducto", "Productos")" method="post">
                 <div class="modal-body">
-                    <input type="hidden" id="marcaId" name="Id" />
+                    <input type="hidden" id="TipoProductoId" name="Id" />
                     <div class="form-group">
                         <label for="nuevoNombre">Nuevo Nombre:</label>
                         <input type="text" class="form-control" id="nuevoNombre" name="Nombre" />
@@ -92,9 +92,9 @@
         $(document).ready(function () {
             // Botón Editar
             $(".editar-btn").click(function () {
-                var marcaId = $(this).data("id");
+                var TipoProductoId = $(this).data("id");
                 var nombreActual = $(this).data("nombre");
-                $("#marcaId").val(marcaId);
+                $("#TipoProductoId").val(TipoProductoId);
                 $("#nuevoNombre").val(nombreActual);
                 $("#editarModal").modal("show");
             });
