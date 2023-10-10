@@ -1,0 +1,191 @@
+﻿@{
+    ViewData["Title"] = "Presentaciones Producto";
+    List<AgroservicioCuxil.Models.DetallePresentacionProducto> DetallePresentacionProducto = new List<AgroservicioCuxil.Models.DetallePresentacionProducto>();
+
+    if (ViewBag.DetallePresentacion != null)
+    {
+        DetallePresentacionProducto = (List<AgroservicioCuxil.Models.DetallePresentacionProducto>)ViewBag.DetallePresentacion;
+    }
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="card-title">Crear Presentación Producto</h3>
+                        <button class="btn btn-primary" data-toggle="collapse" data-target="#crearAcordeon">
+                            Crear
+                        </button>
+                    </div>
+                </div>
+                <div id="crearAcordeon" class="collapse">
+                    <div class="card-body">
+                        <form asp-action="CrearPresentacionProducto" method="post">
+                            <div class="form-group">
+                                <label for="Tipo">Tipo</label>
+                                <select name="Tipo" class="form-control" required>
+                                    <option value="">-Seleccione-</option>
+                                    <option value="@AgroservicioCuxil.Models.DetallePresentacionProducto.TipoPresentacion.Polvo">
+                                        Polvo
+                                    </option>
+                                    <option value="@AgroservicioCuxil.Models.DetallePresentacionProducto.TipoPresentacion.Liquido">
+                                        Liquido
+                                    </option>
+                                    <option value="@AgroservicioCuxil.Models.DetallePresentacionProducto.TipoPresentacion.Otros">
+                                        Otros
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="nombre">Nombre</label>
+                                <input type="text" name="Nombre" class="form-control" />
+                            </div>
+                            <button type="submit" class="btn btn-success">Guardar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+
+        </div>
+    </div>
+    <hr />
+    <h2>Lista de presentaciones</h2>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Tipo</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var Detalle in DetallePresentacionProducto)
+                            {
+                                <tr>
+                                    <td>@Detalle.Nombre</td>
+                                    <td>@Detalle.Tipo</td>
+                                    <td>
+                                        <button class="btn btn-primary editar-btn" data-id="@Detalle.Id" data-nombre="@Detalle.Nombre"
+                                            onclick="SeleccionarPresentacion('@Detalle.Tipo')">
+                                            Editar
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para editar -->
+<div class="modal fade" id="editarModal" tabindex="-1" role="dialog" aria-labelledby="editarModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editarModalLabel">Editar Marca</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editarForm" action="@Url.Action("EditarPresentacionProducto", "Productos")" method="post">
+                <div class="modal-body">
+                    <input type="hidden" id="Idregistro" name="Id" />
+                    <div class="form-group">
+                        <label for="Tipo">Tipo</label>
+                        <select id="Tipo" name="Tipo" class="form-control" required>
+                            <option value="">-Seleccione-</option>
+                            <option value="@AgroservicioCuxil.Models.DetallePresentacionProducto.TipoPresentacion.Polvo">
+                                Polvo
+                            </option>
+                            <option value="@AgroservicioCuxil.Models.DetallePresentacionProducto.TipoPresentacion.Liquido">
+                                Liquido
+                            </option>
+                            <option value="@AgroservicioCuxil.Models.DetallePresentacionProducto.TipoPresentacion.Otros">
+                                Otros
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="nuevoNombre">Nuevo Nombre:</label>
+                        <input type="text" class="form-control" id="nuevoNombre" name="Nombre" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section styles {
+    <link href="~/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+}
+
+    @section scripts {
+    <script src="~/plugins/sweetalert2/sweetalert2.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Botón Editar
+            $(".editar-btn").click(function () {
+                var Idregistro = $(this).data("id");
+                var nombreActual = $(this).data("nombre");
+                $("#Idregistro").val(Idregistro);
+                $("#nuevoNombre").val(nombreActual);
+                $("#editarModal").modal("show");
+            });
+
+
+        });
+        function SeleccionarPresentacion(tipo) {
+            var selectElement = document.getElementById('Tipo');
+            for (var i = 0; i < selectElement.options.length; i++) {
+                if (selectElement.options[i].value === tipo) {
+                    selectElement.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+    </script>
+
+    <script>
+        var creacionExito = '@TempData["CreacionExito"]';
+        var error = '@TempData["Error"]';
+        var mensaje = '@TempData["Mensaje"]';
+
+        if (creacionExito === "Si") {
+            Swal.fire({
+                title: "",
+                text: mensaje,
+                icon: "success"
+            });
+        }
+
+        if (error === "Si") {
+            Swal.fire({
+                title: "Error",
+                text: mensaje,
+                icon: "error"
+            });
+        }
+    </script>
+}

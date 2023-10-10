@@ -1,4 +1,5 @@
-﻿using AgroservicioCuxil.Models;
+﻿using AgroservicioCuxil.Migrations;
+using AgroservicioCuxil.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -680,6 +681,80 @@ namespace AgroservicioCuxil.Controllers
         }
 
 
+        [AuthorizeUsers]
+        public IActionResult PresentacionesProducto()
+        {
+            var DetallePresentacionProducto = _context.DetallePresentacionProducto.ToList();
+            ViewBag.DetallePresentacion = DetallePresentacionProducto;
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CrearPresentacionProducto(DetallePresentacionProducto DetallePresentacionProducto)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Convierte el nombre a minúsculas antes de realizar la búsqueda en la base de datos
+                    string nombreLowerCase = DetallePresentacionProducto.Nombre.ToLower();
+
+                    // Verificar si ya existe un registro con el mismo nombre (insensible a mayúsculas/minúsculas)
+                    var existing = _context.DetallePresentacionProducto.FirstOrDefault(s =>
+                        s.Nombre.ToLower() == nombreLowerCase);
+
+                    if (existing != null)
+                    {
+                        // Ya existe un registro con el mismo nombre (insensible a mayúsculas/minúsculas)
+                        TempData["Error"] = "Si";
+                        TempData["Mensaje"] = "Ya existe un registro con el mismo nombre";
+                        return RedirectToAction("PresentacionesProducto", "Productos");
+                    }
+
+                    _context.DetallePresentacionProducto.Add(DetallePresentacionProducto); // Agregar la marca al contexto
+                    _context.SaveChanges(); // Guardar los cambios en la base de datos
+
+                    TempData["CreacionExito"] = "Si";
+                    TempData["Mensaje"] = "Creacion Exitosa";
+                    return RedirectToAction("PresentacionesProducto", "Productos");
+                }
+                catch (Exception ex)
+                {
+                    TempData["Error"] = "Si";
+                    TempData["Mensaje"] = ex.Message;
+                    return RedirectToAction("PresentacionesProducto", "Productos");
+                }
+            }
+            return RedirectToAction("PresentacionesProducto", "Productos");
+        }
+
+        [HttpPost]
+        public IActionResult EditarPresentacionProducto(DetallePresentacionProducto DetallePresentacionProducto)
+        {
+            if (ModelState.IsValid)
+            {
+                var Existente = _context.DetallePresentacionProducto.Find(DetallePresentacionProducto.Id);
+                if (Existente == null)
+                {
+                    return RedirectToAction("PresentacionesProducto", "Productos");
+                }
+                if (string.IsNullOrWhiteSpace(DetallePresentacionProducto.Nombre))
+                {
+                    TempData["Error"] = "Si";
+                    TempData["Mensaje"] = "No ingrese un nombre en blanco";
+                    return RedirectToAction("PresentacionesProducto", "Productos");
+                }
+
+                Existente.Nombre = DetallePresentacionProducto.Nombre;
+                Existente.Tipo = DetallePresentacionProducto.Tipo;
+                _context.SaveChanges();
+                TempData["CreacionExito"] = "Si";
+                TempData["Mensaje"] = "Modificacion Exitosa";
+                return RedirectToAction("PresentacionesProducto", "Productos");
+            }
+            return RedirectToAction("PresentacionesProducto", "Productos");
+        }
         #endregion
     }
 }
