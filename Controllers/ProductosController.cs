@@ -550,6 +550,136 @@ namespace AgroservicioCuxil.Controllers
         }
 
 
+        [AuthorizeUsers]
+        public IActionResult SubtipoProducto()
+        {
+            var TiposProducto = _context.TipoProducto.ToList();
+            var SubtipoProducto = _context.SubtipoProducto.ToList();
+            ViewBag.SubtipoProducto = SubtipoProducto;
+            return View(TiposProducto);
+        }
+
+        [HttpPost]
+        public IActionResult CrearSubtipo(SubtipoProducto SubtipoProducto)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Convierte el nombre a minúsculas antes de realizar la búsqueda en la base de datos
+                    string nombreLowerCase = SubtipoProducto.Nombre.ToLower();
+
+                    // Verificar si ya existe un registro con el mismo nombre (insensible a mayúsculas/minúsculas)
+                    var existingSubtipo = _context.SubtipoProducto.FirstOrDefault(s =>
+                        s.Nombre.ToLower() == nombreLowerCase);
+
+                    if (existingSubtipo != null)
+                    {
+                        // Ya existe un registro con el mismo nombre (insensible a mayúsculas/minúsculas)
+                        TempData["Error"] = "Si";
+                        TempData["Mensaje"] = "Ya existe un subtipo con el mismo nombre.";
+                        return RedirectToAction("SubtipoProducto", "Productos");
+                    }
+
+                    // Si no existe, entonces puedes agregar el nuevo subtipo
+                    SubtipoProducto.Nombre = nombreLowerCase; // Guardar el nombre en minúsculas
+                    _context.SubtipoProducto.Add(SubtipoProducto); // Agregar el subtipo al contexto
+                    _context.SaveChanges(); // Guardar los cambios en la base de datos
+
+                    TempData["CreacionExito"] = "Si";
+                    TempData["Mensaje"] = "Creacion Exitosa";
+                    return RedirectToAction("SubtipoProducto", "Productos");
+                }
+                catch (Exception ex)
+                {
+                    TempData["Error"] = "Si";
+                    TempData["Mensaje"] = ex.Message;
+                    return RedirectToAction("SubtipoProducto", "Productos");
+                }
+            }
+
+            return RedirectToAction("SubtipoProducto", "Productos");
+        }
+
+        [HttpPost]
+        public IActionResult EditarSubtipo(SubtipoProducto SubtipoProducto)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var SubtipoProductoExistente = _context.SubtipoProducto.Find(SubtipoProducto.Id);
+                    if (SubtipoProductoExistente == null)
+                    {
+                        TempData["Error"] = "Si";
+                        TempData["Mensaje"] = "El registro no existe";
+                        return RedirectToAction("SubtipoProducto", "Productos");
+                    }
+                    if (string.IsNullOrWhiteSpace(SubtipoProducto.Nombre))
+                    {
+                        TempData["Error"] = "Si";
+                        TempData["Mensaje"] = "No ingrese un nombre en blanco";
+                        return RedirectToAction("SubtipoProducto", "Productos");
+                    }
+
+                    SubtipoProductoExistente.Nombre = SubtipoProducto.Nombre;
+                    _context.SaveChanges();
+                    TempData["CreacionExito"] = "Si";
+                    TempData["Mensaje"] = "Modificacion Exitosa";
+                    return RedirectToAction("SubtipoProducto", "Productos");
+                }
+                catch (Exception ex)
+                {
+                    TempData["Error"] = "Si";
+                    TempData["Mensaje"] = ex.Message;
+                    return RedirectToAction("SubtipoProducto", "Productos");
+                }
+            }
+
+            return RedirectToAction("SubtipoProducto", "Productos");
+        }
+
+
+        [HttpPost]
+        public IActionResult CrearDetalleProducto(DetalleProducto DetalleProducto)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Verificar si ya existe un registro con la misma combinación de IdTipoProducto e IdSubtipoProducto
+                    var existingDetalle = _context.DetalleProducto.FirstOrDefault(d =>
+                        d.IdTipoProducto == DetalleProducto.IdTipoProducto &&
+                        d.IdSubtipoProducto == DetalleProducto.IdSubtipoProducto);
+
+                    if (existingDetalle != null)
+                    {
+                        // Ya existe un registro con la misma combinación, puedes manejarlo aquí
+                        TempData["Error"] = "Si";
+                        TempData["Mensaje"] = "Ya existe un detalle con la misma combinacion de Tipo y Subtipo.";
+                        return RedirectToAction("SubtipoProducto", "Productos");
+                    }
+
+                    // Si no existe, entonces puedes agregar el nuevo detalle
+                    _context.DetalleProducto.Add(DetalleProducto); // Agregar el detalle al contexto
+                    _context.SaveChanges(); // Guardar los cambios en la base de datos
+
+                    TempData["CreacionExito"] = "Si";
+                    TempData["Mensaje"] = "Relacion Exitosa";
+                    return RedirectToAction("SubtipoProducto", "Productos");
+                }
+                catch (Exception ex)
+                {
+                    TempData["Error"] = "Si";
+                    TempData["Mensaje"] = ex.Message;
+                    return RedirectToAction("SubtipoProducto", "Productos");
+                }
+            }
+
+            return RedirectToAction("SubtipoProducto", "Productos");
+        }
+
+
         #endregion
     }
 }
