@@ -1,0 +1,151 @@
+﻿@model List<AgroservicioCuxil.Models.TipoProducto>;
+
+@{
+    ViewData["Title"] = "Subtipo Producto";
+    List<AgroservicioCuxil.Models.SubtipoProducto> subtipoProductos = new List<AgroservicioCuxil.Models.SubtipoProducto>();
+
+    if (ViewBag.SubtipoProducto != null)
+    {
+        subtipoProductos = (List<AgroservicioCuxil.Models.SubtipoProducto>)ViewBag.SubtipoProducto;
+    }
+}
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Crear Subtipo de Producto</h3>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-info" data-toggle="collapse" data-target="#crearSubtipoForm" title="Crear">
+                            <i class="fa fa-plus-square" aria-hidden="true"></i>
+                        </button>
+                        <div id="crearSubtipoForm" class="collapse">
+                            <form method="post" action="@Url.Action("CrearSubtipo", "Productos")">
+                                <div class="form-group">
+                                    <label for="nombreSubtipo">Nombre del Subtipo:</label>
+                                    <input type="text" class="form-control" id="Nombre" name="Nombre" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Crear</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Editar Subtipo de Producto</h3>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-secondary" data-toggle="collapse" data-target="#editarSubtipoForm" title="Editar">
+                            Editar
+                        </button>
+                        <div id="editarSubtipoForm" class="collapse">
+                            <form method="post" action="@Url.Action("EditarSubtipo", "Productos")">
+                                <div class="form-group">
+                                    <label for="subtipoProductoId">SubTipo producto</label>
+                                    <select class="form-control" id="IdSubtipoProducto" name="Id" required onchange="SeleccionarSubtipo(this.value)">
+                                        <option value="">--seleccione--</option>
+                                        @foreach (var subtipo in subtipoProductos)
+                                        {
+                                            <option value="@subtipo.Id">@subtipo.Nombre</option>
+                                        }
+                                    </select>
+                                    <label for="nombreSubtipo">Nuevo nombre:</label>
+                                    <input type="text" class="form-control" id="NombreSubtipoProducto" name="Nombre" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Modificar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">Crear Relación</h3>
+                    </div>
+                    <div class="card-body">
+                        @using (Html.BeginForm("CrearDetalleProducto", "Productos"))
+                        {
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="tipoProductoId">Tipo producto</label>
+                                    <select class="form-control" name="IdTipoProducto" required>
+                                        <option value="">--seleccione--</option>
+                                        @foreach (var TipoProducto in Model)
+                                        {
+                                            <option value="@TipoProducto.Id">@TipoProducto.Nombre</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="subtipoProductoId">SubTipo producto</label>
+                                    <select class="form-control" id="IdSubtipoProducto" name="IdSubtipoProducto" required onchange="SeleccionarSubtipo(this.value)">
+                                        <option value="">--seleccione--</option>
+                                        @foreach (var subtipo in subtipoProductos)
+                                        {
+                                            <option value="@subtipo.Id">@subtipo.Nombre</option>
+                                        }
+                                    </select>
+
+                                </div>
+                                <div class="form-group col-md-4" >
+                                    <label>Accion</label>
+                                    <button type="submit" class="btn btn-primary form-control">Relacionar</button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+    <link href="~/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+    }
+
+    @section scripts {
+    <script src="~/plugins/sweetalert2/sweetalert2.min.js"></script>
+
+    <script>
+        function SeleccionarSubtipo(selectedValue) {
+            var selectElement = document.getElementById('IdSubtipoProducto');
+            var selectedOption = selectElement.options[selectElement.selectedIndex];
+            var selectedText = selectedOption.text;
+
+            document.getElementById('NombreSubtipoProducto').value = selectedText;
+        }
+    </script>
+
+
+    <script>
+        var creacionExito = '@TempData["CreacionExito"]';
+        var error = '@TempData["Error"]';
+        var mensaje = '@TempData["Mensaje"]';
+
+        if (creacionExito === "Si") {
+            Swal.fire({
+                title: "",
+                text: mensaje,
+                icon: "success"
+            });
+        }
+
+        if (error === "Si") {
+            Swal.fire({
+                title: "Error",
+                text: mensaje,
+                icon: "error"
+            });
+        }
+    </script>
+}
