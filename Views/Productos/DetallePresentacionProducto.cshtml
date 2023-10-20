@@ -19,118 +19,119 @@
         DetallePresentacion = (AgroservicioCuxil.Models.DetallePresentacionProducto)ViewBag.DetallePresentacion;
     }
 }
+<section class="content">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <h2 class="product-name d-inline-block d-md-none">@nombreProducto</h2>
 
-<div>
-    <input type="hidden" id="IdProducto" value="@IdProducto" />
-</div>
-<div class="content-wrapper">
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Detalle presentacion producto</h1>
+                    @if (string.IsNullOrEmpty(Presentacion.RutaImagen))
+                    {
+                        <form method="post" action="/Productos/AgregarImagenPresentacion" enctype="multipart/form-data">
+                            <input type="hidden" name="Id" value="@Presentacion.Id" />
+                            <input type="hidden" name="idProducto" value="@IdProducto" />
+
+                            <div class="form-group">
+                                <label for="imagen">Imagen</label>
+                                <input type="file" class="form-control-file" id="imagen" name="Imagen" accept="image/*" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-icon">
+                                <i class="fas fa-image"></i> Agregar Imagen
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <img src="/ImagenesProductos/@Presentacion.RutaImagen" class="product-image" alt="Product Image">
+
+                        <form method="post" action="/Productos/AgregarImagenPresentacion" enctype="multipart/form-data">
+                            <input type="hidden" name="Id" value="@Presentacion.Id" />
+                            <input type="hidden" name="idProducto" value="@IdProducto" />
+
+                            <div class="form-group">
+                                <label for="imagen">Nueva Imagen</label>
+                                <input type="file" class="form-control-file" id="imagen" name="Imagen" accept="image/*" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-icon">
+                                <i class="fas fa-sync"></i> Actualizar Imagen
+                            </button>
+                        </form>
+                    }
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <h2 class="product-name my-3">@nombreProducto</h2>
+                    <p>Descripción del producto.</p>
+                    <hr>
+
+                    <h4>Detalles del Producto</h4>
+
+                    <div class="product-details">
+                        <div class="detail">
+                            <i class="fas fa-tag text-warning"></i>
+                            <span class="detail-label">Marca:</span>
+                            <span class="detail-value">@nombreMarca</span>
+                        </div>
+                        <div class="detail">
+                            <i class="fas fa-tags text-success"></i>
+                            <span class="detail-label">Tipo de Producto:</span>
+                            <span class="detail-value">@tipoProducto</span>
+                        </div>
+
+                        <div class="detail">
+                            <i class="fas fa-tag text-warning"></i>
+                            <span class="detail-label">Precio:</span>
+                            <span class="detail-value">@Presentacion.Precio</span>
+                        </div>
+
+                        <div class="detail">
+                            <i class="fas fa-cubes text-info"></i>
+                            <span class="detail-label">Existencia:</span>
+                            <span class="detail-value">@Presentacion.Existencia</span>
+                        </div>
+                        <hr />
+                        <div class="detail">
+                            <i class="fas fa-cubes text-info"></i>
+                            <span class="detail-label">Pesticida:</span>
+                            <span class="detail-value">@subtipoProducto</span>
+                        </div>
+
+                      
+                        
+                        @if (Presentacion.Precio == 0)
+                        {
+                            <div class="detail">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDetallePresenetacion">
+                                     <i class="fas fa-plus-circle"></i> Agregar Detalles
+                                </button>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="detail">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDetallePresenetacion">
+                                    <i class="fas fa-sync"></i>
+                                    Actualizar Detalles
+                                </button>
+                            </div>
+                        }
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
-    <section class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <!-- Detalle del Producto -->
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="form-group">
-                                <label for="nombre"><i class="fas fa-font"></i> Nombre</label>
-                                <input type="text" class="form-control" id="nombre" value="@nombreProducto" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label for="tipoProducto"><i class="fas fa-tags text-success"></i> Tipo de Producto</label>
-                                <input type="text" class="form-control" id="tipoProducto" value="@tipoProducto" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label for="subtipoProducto"><i class="fas fa-cubes text-info"></i> Subtipo de Producto</label>
-                                <input type="text" class="form-control" id="subtipoProducto" value="@subtipoProducto" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label for="marca"><i class="fas fa-tag text-warning"></i> Marca</label>
-                                <input type="text" class="form-control" id="marca" value="@nombreMarca" readonly>
-                            </div>
-                             <div class="form-group">
-                                <label for="marca"><i class="fas fa-tag text-warning"></i> Precio</label>
-                                <input type="text" class="form-control" id="marca" value="@Presentacion.Precio" readonly>
-                            </div> 
-                            <div class="form-group">
-                                <label for="marca"><i class="fas fa-cubes text-info"></i> Existencia</label>
-                                <input type="text" class="form-control" id="marca" value="@Presentacion.Existencia" readonly>
-                            </div>
-
-                            <!-- Agregar o actualizar imagen del producto -->
-                            @if (string.IsNullOrEmpty(Presentacion.RutaImagen))
-                            {
-                                <form method="post" action="/Productos/AgregarImagenPresentacion" enctype="multipart/form-data">
-                                    <input type="hidden" name="Id" value="@Presentacion.Id" />
-                                    <input type="hidden" name="idProducto" value="@IdProducto" />
-                                    <div class="form-group">
-                                        <label for="imagen">Imagen</label>
-                                        <input type="file" class="form-control-file" id="imagen" name="Imagen" required>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary"><i class="fas fa-image"></i> Agregar Imagen</button>
-                                </form>
-                            }
-                            else
-                            {
-                                <div class="form-group">
-                                    <label for="imagen"><i class="fas fa-image"></i> Imagen Actual</label>
-                                    <br>
-                                    <img src="/ImagenesProductos/@Presentacion.RutaImagen" alt="Imagen del Producto" class="img-thumbnail" style="max-width: 200px;">
-                                </div>
-                                <form method="post" action="/Productos/AgregarImagenPresentacion" enctype="multipart/form-data">
-                                    <input type="hidden" name="Id" value="@Presentacion.Id" />
-                                    <input type="hidden" name="idProducto" value="@IdProducto" />
-                                    <div class="form-group">
-                                        <label for="imagen">Nueva Imagen</label>
-                                        <input type="file" class="form-control-file" id="imagen" name="Imagen" required>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary"><i class="fas fa-sync"></i> Actualizar Imagen</button>
-                                </form>
-                            }
-                            @if (Presentacion.Precio == 0)
-                            {
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDetallePresenetacion">
-                                    Agregar Detalles
-                                </button>
-                            }
-                            else
-                            {
-                                   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDetallePresenetacion">
-                                    Actualizar Detalles
-                                </button> 
-                            }
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Lista de Presentaciones -->
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Presentaciones</h5>
-                            <ul class="list-group">
+</section>
 
 
-                                <li class="list-group-item">
-                                    <strong>Presentación:</strong> @DetallePresentacion.Nombre <br />
-                                    @*                                        <strong>Precio:</strong> @presentacion.Precio <br />
-                                    *@                                        <!-- Puedes mostrar más detalles de la presentación aquí si lo deseas -->
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+
+
+<div>
+    <input type="hidden" id="IdProducto" value="@IdProducto" />
+
     @using (Html.BeginForm("ActualizarPresentacionProducto", "Productos", FormMethod.Post))
     {
         <div class="modal fade" id="modalDetallePresenetacion" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
@@ -162,10 +163,6 @@
             </div>
         </div>
     }
-
-
-
-
 </div>
 
 @section styles{

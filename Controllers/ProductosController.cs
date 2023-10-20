@@ -383,7 +383,11 @@ namespace AgroservicioCuxil.Controllers
                 TempData["Error"] = "Si";
                 TempData["Mensaje"] = error.Message;
             }
-            return RedirectToAction("DetallePresentacionProducto", new { idProducto = idProducto, IdPresentacion = idDetalle });
+            string referrer = Request.Headers["Referer"].ToString();
+
+            // Redireccionar de vuelta a la URL de referencia
+            return Redirect(referrer);
+            //return RedirectToAction("DetallePresentacionProducto", new { idProducto = idProducto, IdPresentacion = idDetalle });
         }
 
         [AuthorizeUsers]
