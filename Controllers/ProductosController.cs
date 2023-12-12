@@ -307,7 +307,7 @@ namespace AgroservicioCuxil.Controllers
 
         [AuthorizeUsers]
         [HttpPost]
-        public IActionResult GuardarPresentacionProducto(int idProducto, int idDetallePresentacion)
+        public IActionResult GuardarPresentacionProducto(int idProducto, int idDetallePresentacion,double Precio, double Existencia)
         {
             try
             {
@@ -323,7 +323,9 @@ namespace AgroservicioCuxil.Controllers
                 var nuevaPresentacion = new PresentacionProducto
                 {
                     IdProducto = idProducto,
-                    IdDetallePresentacion = idDetallePresentacion
+                    IdDetallePresentacion = idDetallePresentacion,
+                    Precio = Precio,
+                    Existencia = Existencia,
                 };
                 _context.PresentacionProducto.Add(nuevaPresentacion);
                 _context.SaveChanges();

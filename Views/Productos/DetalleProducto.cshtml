@@ -116,12 +116,32 @@
         <div class="modal-dialog modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel">Presentaciones</h5>
+                    <h5 class="modal-title" id="modalLabel">Ingrese los detalles</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div>
+                        <div class="form-group">
+                            <!-- Input para Precio -->
+
+                            <label for="precio">Precio:</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">$</span>
+                                </div>
+                                <input type="number" class="form-control" id="precio" step="any" placeholder="Ingrese el precio" />
+                            </div>
+                        </div>
+
+                        <!-- Input para Existencia -->
+                        <div class="form-group">
+                            <label for="existencia">Existencia:</label>
+                            <input type="number" class="form-control" id="existencia" step="any" placeholder="Ingrese la existencia" />
+                        </div>
+                    </div>
+                    <hr />
                     <ul class="nav nav-tabs" id="tabPresentaciones" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="tabLiquido" data-toggle="tab" href="#contenidoLiquido" role="tab" aria-controls="contenidoLiquido" aria-selected="true">Líquido</a>
@@ -147,6 +167,7 @@
                             <div id="presentacionesOtros"></div>
                         </div>
                     </div>
+                   
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -253,6 +274,44 @@
             var idDetallePresentacion = $(this).data('id');
             var idProducto = document.getElementById("IdProducto").value;
 
+            var Precio = document.getElementById("precio").value;
+            var Existencia = document.getElementById("existencia").value;
+
+            if (Precio == "") {
+                alert("Ingrese un precio");
+                document.getElementById("precio").focus();
+                return;
+            }
+
+            if (Precio == 0) {
+                alert("El precio no puede ser 0");
+                document.getElementById("precio").focus();
+                return;
+            }
+            if (Precio < 0) {
+                alert("El precio no puede ser negativo ");
+                document.getElementById("precio").focus();
+                return;
+            }
+
+            if (Existencia == "") {
+                alert("Ingrese existencia ");
+                document.getElementById("existencia").focus();
+                return;
+            }
+
+
+            if (Existencia == 0) {
+                alert("La existencia no puede ser 0");
+                document.getElementById("existencia").focus();
+                return;
+            }
+            if (Existencia < 0) {
+                alert("La existencia no puede ser negativa ");
+                document.getElementById("existencia").focus();
+                return;
+            }
+
             // Mostrar SweetAlert para confirmar el registro
             Swal.fire({
                 title: '¿Deseas crear esa presentacion?',
@@ -263,7 +322,7 @@
                 showCloseButton: true,
                 showLoaderOnConfirm: true,
                 preConfirm: () => {
-                    return enviarRegistroAjax(idProducto, idDetallePresentacion);
+                    return enviarRegistroAjax(idProducto, idDetallePresentacion, Precio, Existencia);
                 },
                 allowOutsideClick: () => !Swal.isLoading()
             }).then((result) => {
@@ -290,7 +349,7 @@
                 }
             });
 
-            function enviarRegistroAjax(idProducto, idDetallePresentacion) {
+            function enviarRegistroAjax(idProducto, idDetallePresentacion,Precio,Existencia) {
                 return new Promise((resolve) => {
                     // Mostrar SweetAlert de carga mientras se realiza la solicitud AJAX
                     Swal.fire({
@@ -304,11 +363,13 @@
                     });
 
                     $.ajax({
-                        url: '/Productos/GuardarPresentacionProducto', // Asegúrate de poner la ruta correcta a tu controlador
+                        url: '/Productos/GuardarPresentacionProducto', 
                         type: 'POST',
                         data: {
                             idProducto: idProducto,
-                            idDetallePresentacion: idDetallePresentacion
+                            idDetallePresentacion: idDetallePresentacion,
+                            Precio: Precio,
+                            Existencia: Existencia
                         },
                         success: function (data) {
                             // Cerrar SweetAlert de carga
