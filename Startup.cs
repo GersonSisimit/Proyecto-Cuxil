@@ -29,6 +29,16 @@ namespace RegistroLogin
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            // Agrega la configuración de la sesión
+            services.AddDistributedMemoryCache(); // Puedes cambiar a otro proveedor de almacenamiento distribuido si es necesario
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(20); // Establece el tiempo de espera de la sesión
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             services.AddDbContext<AgroservicioContext>(options =>
                options.UseSqlServer(Configuration.GetConnectionString("cadena")));
              
@@ -76,6 +86,7 @@ namespace RegistroLogin
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -95,6 +106,7 @@ namespace RegistroLogin
                         template: "{controller=Home}/{action=Index}/{id?}"
                     );
             });
+
         }
 
     }

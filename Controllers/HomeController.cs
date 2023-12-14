@@ -24,6 +24,10 @@ namespace RegistroLogin.Controllers
         [AuthorizeUsers]
         public IActionResult Index()
         {
+            HttpContext.Session.SetString("Message", "Hello MVC!");
+
+            string message = HttpContext.Session.GetString("Message");
+
             return View();
         }
 
