@@ -37,7 +37,7 @@
                                 <div class="row">
                                     <div class="col-md-8 offset-md-2">
                                         <div class="input-group">
-                                            <input type="search" id="searchInput" name="busqueda" class="form-control form-control-lg" placeholder="Ingrese su búsqueda">
+                                            <input type="search" id="searchInput" name="busqueda" class="form-control form-control-lg" placeholder="Ingrese su búsqueda" >
                                             <div class="input-group-append">
                                                 <button type="button" class="btn btn-lg btn-default" onclick="BuscarProducto()">
                                                     <i class="fa fa-search"></i>
@@ -53,12 +53,46 @@
             </div>
         </div>
     </section>
+    <section>
+        <div>
+            <!-- Modal -->
+            <div class="modal fade" id="resultadosBusquedaModal" tabindex="-1" role="dialog" aria-labelledby="resultadosBusquedaModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="resultadosBusquedaModalLabel">Resultados de Búsqueda</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Contenedor para los resultados de la búsqueda -->
+                            <div id="modalResultadosBusqueda"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
 
 
 @section Scripts {
     <script src="~/plugins/sweetalert2/sweetalert2.min.js"></script>
     <script>
+        var input = document.getElementById("searchInput");
+
+        // Agregar un evento keydown al elemento
+        input.addEventListener("keydown", function (event) {
+            // Verificar si la tecla presionada es "Enter"
+            if (event.keyCode === 13) {
+                // Aquí puedes realizar acciones cuando se presiona "Enter"
+                BuscarProducto();
+            }
+        });
         function BuscarProducto() {
             var busqueda = document.getElementById("searchInput").value;
 
@@ -74,12 +108,13 @@
                     busqueda
                 },
                 success: function (result) {
+                    // Actualizar el contenido del contenedor en el modal con los resultados de la búsqueda
+                    $("#modalResultadosBusqueda").html(result);
 
-                    Swal.fire({
-                        title: 'Error',
-                        text: "test",
-                        icon: 'error',
-                    });
+                    // Abrir el modal
+                    $("#resultadosBusquedaModal").modal("show");
+
+                  
                 },
                 error: function (xhr, status, error) {
                     swal({
