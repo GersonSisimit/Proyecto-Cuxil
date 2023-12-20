@@ -42,12 +42,13 @@ namespace AgroservicioCuxil.Controllers
         [HttpPost]
         public IActionResult BuscarProducto(string busqueda)
         {
-            // Obtener los productos que coincidan con la búsqueda por nombre
+            // Lógica para buscar productos según la cadena de búsqueda
             var productos = _context.Producto
                 .Where(p => p.Nombre.Contains(busqueda))
                 .ToList();
 
-            return Json(new { productos, busqueda }); ;
+            return PartialView("_ResultadosBusquedaPartial", productos);
         }
+
     }
 }
