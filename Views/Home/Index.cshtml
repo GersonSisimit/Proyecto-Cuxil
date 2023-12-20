@@ -27,6 +27,19 @@
                         <!-- Puedes agregar tus propios elementos y diseño aquí -->
                         <p>Aquí puedes administrar y realizar ventas.</p>
                         <a href="#" class="btn btn-primary"><i class="fa fa-list"></i> Ver ventas</a>
+                        <table class="table table-hover">
+                            <tbody>
+                                <tr>
+                                    <td>Vender</td>
+                                    <td class="text-right">
+                                        <a href="@Url.Action("Venta", "Ventas")" class="btn btn-default">
+                                            <i class="fa fa-shopping-cart"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <!-- Add other rows here -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -91,6 +104,26 @@
     <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
+
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="box box-solid box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Gestion De Vacaciones</h3>
+                </div>
+                <div class="box-body">
+                    <div class="table-responsive">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Add other columns here -->
+    </div>
+    <!-- Add other rows here -->
+</div>
+
 @section Scripts {
     <script src="~/plugins/sweetalert2/sweetalert2.min.js"></script>
     <script>

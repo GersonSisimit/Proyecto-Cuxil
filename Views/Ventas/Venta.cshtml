@@ -1,0 +1,104 @@
+﻿@using AgroservicioCuxil.Models;
+@model Producto
+
+@{
+    ViewData["Title"] = "Crear Producto";
+    Layout = "_Layout";
+    var relacionTipoSubtipoProducto = ViewBag.RelacionTipoSubtipoProducto;
+    var SubtipoProducto = ViewBag.SubtipoProducto;
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+
+                    <h1 class="m-0">
+                        Venta
+                        <i class="fa fa-cart-plus" aria-hidden="true"></i>
+                    </h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header ">
+                            <h5 class="card-title">
+                                <i class="fas fa-cubes"></i>
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-8 offset-md-2">
+                                        <div class="input-group">
+                                            <input type="search" id="searchInput" name="busqueda" class="form-control form-control-lg" placeholder="Ingrese su búsqueda">
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-lg btn-default" onclick="BuscarProducto()">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+@section Scripts {
+    <script src="~/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <script>
+        function BuscarProducto() {
+            var busqueda = document.getElementById("searchInput").value;
+
+            if (busqueda === "") {
+                alert("Ingrese un dato");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("BuscarProducto", "Ventas")',
+                type: 'POST',
+                data: {
+                    busqueda
+                },
+                success: function (result) {
+
+                    Swal.fire({
+                        title: 'Error',
+                        text: "test",
+                        icon: 'error',
+                    });
+                },
+                error: function (xhr, status, error) {
+                    swal({
+                        title: "Error",
+                        text: "Ocurrió un error al realizar la solicitud.",
+                        type: "error"
+                    });
+                }
+            });
+
+        }
+
+        $(document).ready(function () {
+
+        });
+    </script>
+}
+
+@section Styles {
+    <link href="~/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+}
+
