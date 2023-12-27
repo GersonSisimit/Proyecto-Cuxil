@@ -1,29 +1,142 @@
 ﻿<!-- _ResultadosBusquedaPartial.cshtml -->
-@model List<AgroservicioCuxil.Models.Producto>
+<div class="modal-header">
+    <h5 class="modal-title">Resultados de Búsqueda</h5>
+    <div class="ml-auto">
+        <button class="btn btn-primary" data-dismiss="modal" title="Agregar los productos seleccionados">
+            Agregar <i class="fa fa-cart-plus" aria-hidden="true"></i>
+        </button>
+        <button onclick="mostrarIdsSeleccionados()">Obtener IDs Seleccionados</button>
 
-<h2>Resultados de Búsqueda</h2>
+    </div>
+
+</div>
 
 <table class="table">
     <thead>
         <tr>
-            <th>Nombre</th>
-            <th>Precio</th>
-            <th>Accion</th>
-            <!-- Otras columnas que desees mostrar -->
+            <th style="text-align:center">Nombre</th>
+            <th style="text-align:center">Imagen</th>
+            <th style="text-align:center">Precio</th>
+            <th style="text-align:center">Existencia</th>
+            <th style="text-align:center">Cantidad</th>
+            <th style="text-align:center">Selección</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var producto in Model)
+        @foreach (var item in Model)
         {
-            <tr>
-                <td>@producto.Nombre</td>
-                <td>@producto.IdMarca</td>
-                <td>
-                    <button class="btn btn-primary">
-                        Seleccionar
-                    </button>
-                </td>
-            </tr>
+            foreach (var item2 in item.Presentaciones)
+            {
+                var IdCantidad = "CantidadProducto" + item2.Presentacion.Id;
+
+                <tr>
+                    <td style="text-align:center">@item.Producto.Nombre @item2.DetallePresentacion.Nombre @item.Marca.Nombre</td>
+                    <td style="text-align:center">
+                        @if (@item2.Presentacion.RutaImagen != null)
+                        {
+                            <!-- Agrega un botón para mostrar la imagen como popover -->
+                            <button type="button" class="btn btn-default" data-toggle="popover" title="Imagen" data-content="<img src='/ImagenesProductos/@item2.Presentacion.RutaImagen' class='img-fluid' alt='Product Image'>">
+                                <i class="fa fa-file-image-o" aria-hidden="true"></i>
+                            </button>
+                        }
+                        else
+                        {
+                            <p>Sin imagen</p>
+                        }
+                    </td>
+                    <td style="text-align:center">Q @item2.Presentacion.Precio </td>
+                    <td style="text-align:center">@item2.Presentacion.Existencia</td>
+                    <td style="text-align:center">
+                        <input type="number" id="@IdCantidad" />
+                    </td>
+                    <td style="text-align:center" >
+                        <input type="checkbox" class="checkboxSeleccion" id="@item2.Presentacion.Id" onchange="ValidarSeleccion(this, '@item2.Presentacion.Existencia')">
+                    </td>
+                </tr>
+            }
         }
     </tbody>
 </table>
+
+
+
+    <script>
+        $(function () {
+            $('[data-toggle="popover"]').popover({
+                html: true,
+                placement: 'bottom'
+            });
+        });
+        function ValidarSeleccion(DetalleChekBox, Existencia) {
+            
+            var estadoCheckBox = document.getElementById(DetalleChekBox.id).checked;
+            var IdCantidad = "CantidadProducto" + DetalleChekBox.id;
+            var DetalleCantidad = parseInt(document.getElementById(IdCantidad).value,10);
+
+
+            console.log(DetalleCantidad);
+
+
+            if (estadoCheckBox == false) {
+                document.getElementById(IdCantidad).disabled = false;
+                return;
+            }
+
+            var checkboxSeleccionado = document.getElementById(DetalleChekBox.id);
+
+
+            var Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
+            });
+            if (isNaN(DetalleCantidad)) {
+                Toast.fire({
+                    icon: 'warning',
+                    title: 'Ingrese una cantidad válida'
+                });
+                checkboxSeleccionado.checked = false;
+                document.getElementById(IdCantidad).focus();
+                return;
+            }
+            if (DetalleCantidad > parseInt(Existencia,10)) {
+                    Toast.fire({
+                    icon: 'error',
+                        title: 'La cantidad supera la existencia'
+                    })
+                    checkboxSeleccionado.checked = false;
+                    document.getElementById(IdCantidad).focus();
+                    return;
+            }
+            document.getElementById(IdCantidad).disabled = true;
+        }
+        function mostrarIdsSeleccionados() {
+            // Obtén todos los elementos con la clase 'checkboxSeleccion'
+            var checkboxes = document.getElementsByClassName('checkboxSeleccion');
+
+            // Crea un array para almacenar los IDs de los checkboxes seleccionados
+            var idsSeleccionados = [];
+
+            // Recorre todos los checkboxes y agrega los IDs al array si están seleccionados
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    idsSeleccionados.push(checkboxes[i].id);
+                }
+            }
+
+            // Muestra los IDs en la consola (puedes hacer lo que quieras con ellos)
+            console.log("IDs Seleccionados:", idsSeleccionados);
+        }
+    </script>
+
+
+
+    <style>
+        /* Estilo para hacer el checkbox más grande */
+        input[type="checkbox"] {
+            transform: scale(1.5); /* Ajusta el valor según sea necesario para hacerlo más grande o más pequeño */
+        }
+    </style>
+
+

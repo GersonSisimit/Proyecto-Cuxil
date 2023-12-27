@@ -1,4 +1,5 @@
-﻿using AgroservicioCuxil.Models;
+﻿using AgroservicioCuxil.Migrations;
+using AgroservicioCuxil.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using RegistroLogin.Filters;
@@ -34,7 +35,7 @@ namespace AgroservicioCuxil.Controllers
         public IActionResult InsertarProducto(int IdProductoInsertando)
         {
 
-            
+
             return View();
         }
 
@@ -43,12 +44,29 @@ namespace AgroservicioCuxil.Controllers
         public IActionResult BuscarProducto(string busqueda)
         {
             // Lógica para buscar productos según la cadena de búsqueda
-            var productos = _context.Producto
+            var resultadosBusqueda = _context.Producto
                 .Where(p => p.Nombre.Contains(busqueda))
+                .Select(producto => new
+                {
+                    Producto = producto,
+                    Marca = _context.Marca.FirstOrDefault(m => m.Id == producto.IdMarca),
+                    Presentaciones = _context.PresentacionProducto
+                        .Where(presentacion => presentacion.IdProducto == producto.Id)
+                        .Select(presentacion => new
+                        {
+                            Presentacion = presentacion,
+                            DetallePresentacion = _context.DetallePresentacionProducto
+                                .FirstOrDefault(detalle => detalle.Id == presentacion.IdDetallePresentacion)
+                        })
+                        .ToList()
+                })
                 .ToList();
 
-            return PartialView("_ResultadosBusquedaPartial", productos);
+            // resultadosBusqueda ahora contiene una lista de productos con sus presentaciones y detalles asociados
+
+            return PartialView("_ResultadosBusquedaPartial", resultadosBusqueda);
         }
+
 
     }
 }

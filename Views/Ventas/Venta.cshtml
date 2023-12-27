@@ -29,7 +29,7 @@
                     <div class="card">
                         <div class="card-header ">
                             <h5 class="card-title">
-                                <i class="fas fa-cubes"></i>
+                                <i class="fas fa-cubes"></i> Buscar y agregar productos
                             </h5>
                         </div>
                         <div class="card-body">
@@ -37,7 +37,7 @@
                                 <div class="row">
                                     <div class="col-md-8 offset-md-2">
                                         <div class="input-group">
-                                            <input type="search" id="searchInput" name="busqueda" class="form-control form-control-lg" placeholder="Ingrese su búsqueda" >
+                                            <input type="search" id="searchInput" name="busqueda" class="form-control form-control-lg" placeholder="Ingrese su búsqueda">
                                             <div class="input-group-append">
                                                 <button type="button" class="btn btn-lg btn-default" onclick="BuscarProducto()">
                                                     <i class="fa fa-search"></i>
@@ -55,12 +55,11 @@
     </section>
     <section>
         <div>
-            <!-- Modal -->
             <div class="modal fade" id="resultadosBusquedaModal" tabindex="-1" role="dialog" aria-labelledby="resultadosBusquedaModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="resultadosBusquedaModalLabel">Resultados de Búsqueda</h5>
+                            <h5 class="modal-title" id="resultadosBusquedaModalLabel">Agregar Productos</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -75,6 +74,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </section>
 </div>
@@ -95,12 +95,25 @@
         });
         function BuscarProducto() {
             var busqueda = document.getElementById("searchInput").value;
+            var Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
+            });
 
             if (busqueda === "") {
-                alert("Ingrese un dato");
+                return;
+            }
+            if (busqueda.length < 3) {
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Ingrese una descripción mas larga'
+                })
                 return;
             }
 
+           
             $.ajax({
                 url: '@Url.Action("BuscarProducto", "Ventas")',
                 type: 'POST',
@@ -113,8 +126,6 @@
 
                     // Abrir el modal
                     $("#resultadosBusquedaModal").modal("show");
-
-                  
                 },
                 error: function (xhr, status, error) {
                     swal({
@@ -134,6 +145,8 @@
 }
 
 @section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <link href="~/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
 }
 
