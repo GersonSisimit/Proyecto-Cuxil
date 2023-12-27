@@ -29,7 +29,7 @@
                     <div class="card">
                         <div class="card-header ">
                             <h5 class="card-title">
-                                <i class="fas fa-cubes"></i>
+                                <i class="fas fa-cubes"></i> Buscar y agregar productos
                             </h5>
                         </div>
                         <div class="card-body">
@@ -55,12 +55,11 @@
     </section>
     <section>
         <div>
-            <!-- Modal -->
             <div class="modal fade" id="resultadosBusquedaModal" tabindex="-1" role="dialog" aria-labelledby="resultadosBusquedaModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="resultadosBusquedaModalLabel">Resultados de Búsqueda</h5>
+                            <h5 class="modal-title" id="resultadosBusquedaModalLabel">Agregar Productos</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -75,6 +74,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </section>
 </div>
@@ -113,6 +113,7 @@
                 return;
             }
 
+           
             $.ajax({
                 url: '@Url.Action("BuscarProducto", "Ventas")',
                 type: 'POST',
@@ -125,8 +126,6 @@
 
                     // Abrir el modal
                     $("#resultadosBusquedaModal").modal("show");
-
-
                 },
                 error: function (xhr, status, error) {
                     swal({
@@ -146,6 +145,8 @@
 }
 
 @section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <link href="~/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
 }
 
