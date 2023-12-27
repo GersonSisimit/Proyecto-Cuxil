@@ -37,7 +37,7 @@
                                 <div class="row">
                                     <div class="col-md-8 offset-md-2">
                                         <div class="input-group">
-                                            <input type="search" id="searchInput" name="busqueda" class="form-control form-control-lg" placeholder="Ingrese su búsqueda" >
+                                            <input type="search" id="searchInput" name="busqueda" class="form-control form-control-lg" placeholder="Ingrese su búsqueda">
                                             <div class="input-group-append">
                                                 <button type="button" class="btn btn-lg btn-default" onclick="BuscarProducto()">
                                                     <i class="fa fa-search"></i>
@@ -95,9 +95,21 @@
         });
         function BuscarProducto() {
             var busqueda = document.getElementById("searchInput").value;
+            var Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
+            });
 
             if (busqueda === "") {
-                alert("Ingrese un dato");
+                return;
+            }
+            if (busqueda.length < 3) {
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Ingrese una descripción mas larga'
+                })
                 return;
             }
 
@@ -114,7 +126,7 @@
                     // Abrir el modal
                     $("#resultadosBusquedaModal").modal("show");
 
-                  
+
                 },
                 error: function (xhr, status, error) {
                     swal({
