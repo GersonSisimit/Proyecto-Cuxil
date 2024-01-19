@@ -46,12 +46,27 @@
                     </td>
                     <td style="text-align:center">Q @item2.Presentacion.Precio </td>
                     <td style="text-align:center">@item2.Presentacion.Existencia</td>
-                    <td style="text-align:center">
-                        <input type="number" id="@IdCantidad" />
-                    </td>
-                    <td style="text-align:center" >
-                        <input type="checkbox" class="checkboxSeleccion" id="@item2.Presentacion.Id" onchange="ValidarSeleccion(this, '@item2.Presentacion.Existencia')">
-                    </td>
+                    @if (item2.Presentacion.Existencia == 0)
+                    {
+                        <td style="text-align:center">
+
+                            <p>No hay existencia disponible</p>
+
+
+                        </td>
+                        <td style="text-align:center">
+                        </td>
+                    }
+                    else
+                    {
+                        <td style="text-align:center">
+
+                            <input type="number" id="@IdCantidad" />
+                        </td>
+                        <td style="text-align:center">
+                            <input type="checkbox" class="checkboxSeleccion" id="@item2.Presentacion.Id" onchange="ValidarSeleccion(this, '@item2.Presentacion.Existencia')">
+                        </td>
+                    }
                 </tr>
             }
         }
@@ -60,83 +75,83 @@
 
 
 
-    <script>
-        $(function () {
-            $('[data-toggle="popover"]').popover({
-                html: true,
-                placement: 'bottom'
-            });
+<script>
+    $(function () {
+        $('[data-toggle="popover"]').popover({
+            html: true,
+            placement: 'bottom'
         });
-        function ValidarSeleccion(DetalleChekBox, Existencia) {
-            
-            var estadoCheckBox = document.getElementById(DetalleChekBox.id).checked;
-            var IdCantidad = "CantidadProducto" + DetalleChekBox.id;
-            var DetalleCantidad = parseInt(document.getElementById(IdCantidad).value,10);
+    });
+    function ValidarSeleccion(DetalleChekBox, Existencia) {
+
+        var estadoCheckBox = document.getElementById(DetalleChekBox.id).checked;
+        var IdCantidad = "CantidadProducto" + DetalleChekBox.id;
+        var DetalleCantidad = parseInt(document.getElementById(IdCantidad).value, 10);
 
 
-            console.log(DetalleCantidad);
+        console.log(DetalleCantidad);
 
 
-            if (estadoCheckBox == false) {
-                document.getElementById(IdCantidad).disabled = false;
-                return;
-            }
+        if (estadoCheckBox == false) {
+            document.getElementById(IdCantidad).disabled = false;
+            return;
+        }
 
-            var checkboxSeleccionado = document.getElementById(DetalleChekBox.id);
+        var checkboxSeleccionado = document.getElementById(DetalleChekBox.id);
 
 
-            var Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000
+        var Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+        if (isNaN(DetalleCantidad)) {
+            Toast.fire({
+                icon: 'warning',
+                title: 'Ingrese una cantidad válida'
             });
-            if (isNaN(DetalleCantidad)) {
-                Toast.fire({
-                    icon: 'warning',
-                    title: 'Ingrese una cantidad válida'
-                });
-                checkboxSeleccionado.checked = false;
-                document.getElementById(IdCantidad).focus();
-                return;
-            }
-            if (DetalleCantidad > parseInt(Existencia,10)) {
-                    Toast.fire({
-                    icon: 'error',
-                        title: 'La cantidad supera la existencia'
-                    })
-                    checkboxSeleccionado.checked = false;
-                    document.getElementById(IdCantidad).focus();
-                    return;
-            }
-            document.getElementById(IdCantidad).disabled = true;
+            checkboxSeleccionado.checked = false;
+            document.getElementById(IdCantidad).focus();
+            return;
         }
-        function mostrarIdsSeleccionados() {
-            // Obtén todos los elementos con la clase 'checkboxSeleccion'
-            var checkboxes = document.getElementsByClassName('checkboxSeleccion');
+        if (DetalleCantidad > parseInt(Existencia, 10)) {
+            Toast.fire({
+                icon: 'error',
+                title: 'La cantidad supera la existencia'
+            })
+            checkboxSeleccionado.checked = false;
+            document.getElementById(IdCantidad).focus();
+            return;
+        }
+        document.getElementById(IdCantidad).disabled = true;
+    }
+    function mostrarIdsSeleccionados() {
+        // Obtén todos los elementos con la clase 'checkboxSeleccion'
+        var checkboxes = document.getElementsByClassName('checkboxSeleccion');
 
-            // Crea un array para almacenar los IDs de los checkboxes seleccionados
-            var idsSeleccionados = [];
+        // Crea un array para almacenar los IDs de los checkboxes seleccionados
+        var idsSeleccionados = [];
 
-            // Recorre todos los checkboxes y agrega los IDs al array si están seleccionados
-            for (var i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].checked) {
-                    idsSeleccionados.push(checkboxes[i].id);
-                }
+        // Recorre todos los checkboxes y agrega los IDs al array si están seleccionados
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                idsSeleccionados.push(checkboxes[i].id);
             }
-
-            // Muestra los IDs en la consola (puedes hacer lo que quieras con ellos)
-            console.log("IDs Seleccionados:", idsSeleccionados);
         }
-    </script>
+
+        // Muestra los IDs en la consola (puedes hacer lo que quieras con ellos)
+        console.log("IDs Seleccionados:", idsSeleccionados);
+    }
+</script>
 
 
 
-    <style>
-        /* Estilo para hacer el checkbox más grande */
-        input[type="checkbox"] {
-            transform: scale(1.5); /* Ajusta el valor según sea necesario para hacerlo más grande o más pequeño */
-        }
-    </style>
+<style>
+    /* Estilo para hacer el checkbox más grande */
+    input[type="checkbox"] {
+        transform: scale(1.5); /* Ajusta el valor según sea necesario para hacerlo más grande o más pequeño */
+    }
+</style>
 
 
