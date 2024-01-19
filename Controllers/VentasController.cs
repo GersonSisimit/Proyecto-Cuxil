@@ -17,7 +17,7 @@ namespace AgroservicioCuxil.Controllers
             _context = context;
             _hostEnvironment = hostEnvironment;
         }
-
+        [AuthorizeUsers]
         public IActionResult Venta()
         {
             return View();

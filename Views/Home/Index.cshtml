@@ -24,9 +24,6 @@
                     </div>
                     <div class="box-body">
                         <!-- Contenido relacionado con las ventas -->
-                        <!-- Puedes agregar tus propios elementos y diseño aquí -->
-                        <p>Aquí puedes administrar y realizar ventas.</p>
-                        <a href="#" class="btn btn-primary"><i class="fa fa-list"></i> Ver ventas</a>
                         <table class="table table-hover">
                             <tbody>
                                 <tr>
@@ -45,13 +42,44 @@
             </div>
             <div class="col-md-4">
                 <div class="box box-info animated slideInRight">
-                    <div class="box-header with-border">
+                    <div class="box-header with-border" style="background-color:#abebc6">
                         <h3 class="box-title"><i class="fa fa-cubes"></i> Productos</h3>
                     </div>
                     <div class="box-body">
                         <!-- Contenido relacionado con los productos -->
+
+                        <table class="table table-hover">
+                            <tbody>
+                                <tr>
+                                    <td>Buscar productos</td>
+                                    <td class="text-right">
+                                        <a href="@Url.Action("BuscarProductos", "Productos")" class="btn btn-default">
+                                            <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                                        </a>
+                                    </td> 
+                                    
+                                </tr>
+                                <tr>
+                                    <td>Crear Producto</td>
+                                    <td class="text-right">
+                                        <a href="@Url.Action("CrearProducto", "Productos")" class="btn btn-default">
+                                            <i class="fa fa-plus" aria-hidden="true"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Gestionar Detalles Productos</td>
+                                    <td class="text-right">
+                                        <a href="@Url.Action("GestionProducto", "Productos")" class="btn btn-default">
+                                            <i class="fa fa-cog" aria-hidden="true"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <!-- Add other rows here -->
+                            </tbody>
+                        </table>
                         <!-- Puedes agregar tus propios elementos y diseño aquí -->
-                        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+                        @* <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
                             <li class="nav-item">
                                 <a href="#" class="nav-link active" data-toggle="collapse">
                                     <i class="fa fa-shopping-basket" aria-hidden="true"></i>
@@ -81,7 +109,7 @@
                                     </li>
                                 </ul>
                             </li>
-                        </ul>
+                        </ul> *@
 
                     </div>
                 </div>
@@ -105,24 +133,6 @@
 </div>
 <!-- /.content-wrapper -->
 
-<div class="content-wrapper">
-    <div class="row">
-        <div class="col-lg-4">
-            <div class="box box-solid box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Gestion De Vacaciones</h3>
-                </div>
-                <div class="box-body">
-                    <div class="table-responsive">
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Add other columns here -->
-    </div>
-    <!-- Add other rows here -->
-</div>
 
 @section Scripts {
     <script src="~/plugins/sweetalert2/sweetalert2.min.js"></script>
