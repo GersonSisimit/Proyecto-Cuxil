@@ -23,47 +23,47 @@
                         <h3 class="box-title"><i class="fa fa-cubes"></i> Productos</h3>
                     </div>
                     <div class="box-body">
-                        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
-                            <li class="nav-item">
-                                <a href="#" class="nav-link active" data-toggle="collapse">
-                                    <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-                                    <p>
-                                        Productos
-                                        <i class="right fas fa-angle-left"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview collapse">
-                                    <li class="nav-item">
-                                        <a href="@Url.Action("MarcaProductos", "Productos")" class="nav-link">
+                        <!-- Contenido relacionado con los productos -->
+                        <table class="table table-hover">
+                            <tbody>
+                                <tr>
+                                    <td>Marca de productos</td>
+                                    <td class="text-right">
+                                        <a href="@Url.Action("MarcaProductos", "Productos")" class="btn btn-default">
                                             <i class="fa fa-shopping-bag" aria-hidden="true"></i>
-                                            <p>Marca de productos</p>
                                         </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="@Url.Action("TipoProducto", "Productos")" class="nav-link">
-                                            <i class="fa fa-plus" aria-hidden="true"></i>
-                                            <p>Tipos de producto</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="@Url.Action("SubtipoProducto", "Productos")" class="nav-link">
-                                            <i class="fa fa-sitemap" aria-hidden="true"></i>
-                                            <p>Subtipos de producto</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="@Url.Action("PresentacionesProducto", "Productos")" class="nav-link">
-                                            <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-                                            <p>PresentacionesProducto</p>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
+                                    </td>
 
+                                </tr>
+                                <tr>
+                                    <td>Tipos de producto</td>
+                                    <td class="text-right">
+                                        <a href="@Url.Action("TipoProducto", "Productos")" class="btn btn-default">
+                                            <i class="fa fa-plus" aria-hidden="true"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Subtipos de producto</td>
+                                    <td class="text-right">
+                                        <a href="@Url.Action("SubtipoProducto", "Productos")" class="btn btn-default">
+                                            <i class="fa fa-sitemap" aria-hidden="true"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Presentaciones Producto</td>
+                                    <td class="text-right">
+                                        <a href="@Url.Action("PresentacionesProducto", "Productos")" class="btn btn-default">
+                                            <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <!-- Add other rows here -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            </div>
         </div>
     </section>
     <!-- /.content -->
@@ -84,6 +84,6 @@
         });
     </script>
 }
-    @section Styles {
+@section Styles {
     <link href="~/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
 }
