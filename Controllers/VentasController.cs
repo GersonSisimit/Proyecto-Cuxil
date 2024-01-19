@@ -32,11 +32,21 @@ namespace AgroservicioCuxil.Controllers
 
         [AuthorizeUsers]
         [HttpPost]
-        public IActionResult InsertarProducto(int IdProductoInsertando)
+        public IActionResult InsertarProducto(string IdProductoInsertando)
         {
+            try
+            {
+                //Agregarlo a session para agregar los productos a una factura de ventas
+                //Deserealizar el array de ids de productos y tambien el total de cada uno 
 
 
-            return View();
+                return Json(new { Message = "Producto agregado",success = true }); 
+            }
+            catch (System.Exception Error)
+            {
+
+                return Json(new { Error.Message, success = true }); 
+            }
         }
 
         [AuthorizeUsers]
