@@ -34,7 +34,7 @@ namespace RegistroLogin
             services.AddDistributedMemoryCache(); // Puedes cambiar a otro proveedor de almacenamiento distribuido si es necesario
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(20); // Establece el tiempo de espera de la sesión
+                options.IdleTimeout = TimeSpan.FromHours(6); // Establece el tiempo de espera de la sesión
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
